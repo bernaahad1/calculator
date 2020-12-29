@@ -4,6 +4,65 @@
 
 using namespace std;
 
+bool isAritmeticSymb(char ch) {
+    return (ch == '+' || ch == '-' || ch == '*' || ch == '/' || ch == '^');
+}
+
+bool correctSymb(string line, int i = 0, bool InNum = false, bool inSymb = false) {
+    char ch = line[i];
+    if (line[i] == '\0') {
+        return InNum;
+    }
+
+    if (ch == '(') {
+        if (InNum) {
+            return false;
+        }
+        return correctSymb(line, ++i, InNum, inSymb);
+    }
+    if (ch == ')') {
+        if (inSymb) {
+            return false;
+        }
+        return correctSymb(line, ++i, InNum, inSymb);
+    }
+
+    if (ch >= '0' && ch <= '9') {
+        if (i != 0 && line[i - 1] == ' ' && (i - 1) != 0 && InNum) {
+            return false;
+        }
+        InNum = true;
+        inSymb = false;
+       return correctSymb(line, ++i, InNum, inSymb);
+    }
+    if (isAritmeticSymb(ch)) {
+        if (!InNum) {
+            return false;
+        }
+        inSymb = true;
+        InNum = false;
+        return correctSymb(line, ++i, InNum, inSymb);
+    }
+    if (ch == ' ') {
+        return correctSymb(line, ++i, InNum, inSymb);
+    }
+}
+
+bool bracketsAreBalanced(string line) {
+    int numOfOp = 0; //the oppening brackets
+    int numOfClos = 0; //the closing brackets
+
+    for (int i = 0; i < line.size(); i++) {
+        if (line[i] == '(') {
+            numOfOp++;
+        }
+        if (line[i] == ')') {
+            numOfClos++;
+        }
+    }
+    return numOfClos == numOfOp;
+}
+
 int main()
 {
     string line;
@@ -15,12 +74,14 @@ int main()
         getline(file,line);
     }
     else {
-        cout << "Problem with reading from the file" << endl;
+        cout << "Problem with reading from the file!" << endl;
     }
-    
-    line.erase(remove(line.begin(), line.end(), ' '), line.end());
-    
+
     file.close();
+
+    if (bracketsAreBalanced(line) && correctSymb(line)) {
+        cout << "The input data is incorrect!";
+    }
 
     return 0;
 }
