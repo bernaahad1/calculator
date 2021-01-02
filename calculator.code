@@ -146,6 +146,47 @@ string RPN(string infix) {
     return postfix;
 }
 
+double doOperation(double leftOp, double rightOp, char ch) {
+    switch(ch) {
+    case '+': return leftOp + rightOp;
+    case '-': return leftOp - rightOp;
+    case '*': return leftOp * rightOp;
+    case '/': return leftOp / rightOp;
+    case '^': return pow(leftOp, rightOp);
+    }
+}
+
+double calculate(string expression) {
+    stack <double> stack;
+
+    for (size_t i = 0; i < expression.size(); i++) {
+        if (isOperand(expression[i])) {
+            double operand = expression[i] - 48.0;
+            while (expression[i + 1] != ' ') {
+                operand = operand * 10 + (expression[i + 1] - 48.0);
+                ++i;
+            }
+            stack.push(operand);
+
+        }
+        if (isOperator(expression[i])) {
+            double leftOp = 0;
+            double rightOp = 0;
+            double result = 0;
+            rightOp += stack.top();
+            stack.pop();
+            if ((!stack.empty()) && stack.top() != '#') {
+                leftOp +=stack.top();
+                stack.pop();
+            }
+            result = doOperation(leftOp, rightOp, expression[i]);
+            stack.push(result);
+
+        }
+    }
+    return stack.top();
+}
+
 int main()
 {
     string line;
@@ -165,6 +206,7 @@ int main()
 
     if (bracketsAreBalanced(line) && correctSymb(line)) {
           postfix_expression = RPN(line);
+          cout << calculate(postfix_expression);
     }
     else {
         cout << "The input data is incorrect!";
