@@ -18,6 +18,8 @@ bool correctSymb(string line, int i = 0, bool InNum = false, bool inSymb = false
         if (InNum) {
             return false;
         }
+        inSymb = false;
+        InNum = false;
         return correctSymb(line, ++i, InNum, inSymb);
     }
     if (ch == ')') {
@@ -34,15 +36,21 @@ bool correctSymb(string line, int i = 0, bool InNum = false, bool inSymb = false
         inSymb = false;
        return correctSymb(line, ++i, InNum, inSymb);
     }
-    if (isAritmeticSymb(ch)) {
+    if (ch == ' ') {
+        return correctSymb(line, ++i, InNum, inSymb);
+    }
+    if (isOperator(ch)) {
+        if ((!InNum) && (!inSymb) && ch == '-') {
+            inSymb = true;
+            InNum = false;
+            return correctSymb(line, ++i, InNum, inSymb);
+        }
         if (!InNum) {
             return false;
         }
+        
         inSymb = true;
         InNum = false;
-        return correctSymb(line, ++i, InNum, inSymb);
-    }
-    if (ch == ' ') {
         return correctSymb(line, ++i, InNum, inSymb);
     }
 }
@@ -120,6 +128,22 @@ string RPN(string infix) {
             postfix += ' ';
         }
         else if (isOperator(ch)){
+            bool isNegativeNum = false;
+            if (ch == '-') {
+                isNegativeNum = true;
+                for (int j = i - 1; j >= 0; j--) {
+                    if (infix[j] != '(' && infix[j] != ' ') {
+                        isNegativeNum = false;
+                    }
+                    if (infix[j] == '(' && isNegativeNum) {
+                        postfix += ch;
+                        break;
+                    }
+                }
+                if (isNegativeNum) {
+                    continue;
+                }
+            }
             while (!st.empty() && (st.top() != '#') && eqlOrHigher(st.top(), ch)){
                 postfix += st.top();
                 postfix += ' ';
@@ -167,7 +191,18 @@ double calculate(string expression) {
                 ++i;
             }
             stack.push(operand);
-
+            continue;
+        }
+        if (expression[i] == '-' && isOperand(expression[i + 1])) {
+            double operand = (expression[i + 1] - 48.0);
+            ++i;
+            while (expression[i + 1] != ' ') {
+                operand = operand * 10 + (expression[i + 1] - 48.0);
+                ++i;
+            }
+            operand *= (-1);
+            stack.push(operand);
+            continue;
         }
         if (isOperator(expression[i])) {
             double leftOp = 0;
@@ -181,7 +216,7 @@ double calculate(string expression) {
             }
             result = doOperation(leftOp, rightOp, expression[i]);
             stack.push(result);
-
+            continue;
         }
     }
     return stack.top();
