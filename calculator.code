@@ -5,11 +5,60 @@
 
 using namespace std;
 
+bool isOperator(char ch);
+
+bool correctSymb(string line, int i = 0, bool InNum = false, bool inSymb = false);  //inNum is true when the  symbol must be num, is false when the current symb must be */-+
+
+bool bracketsAreBalanced(string line);
+
+bool isOperand(char ch);
+
+// here, precedence() function is used to define the precedence to the operator.  
+int precedence(char op);
+
+// The eqlOrhigher() function is used to check the higher or equal precedence of the two operators in infix expression. 
+bool eqlOrHigher(char operator1, char operator2);
+
+string RPN(string infix); 
+
+double doOperation(double leftOp, double rightOp, char ch);
+
+double calculate(string expression); 
+
+
+int main()
+{
+    string line;
+    fstream file;
+    string postfix_expression;
+
+    file.open("aritmetic_expression.txt", ios::in);
+
+    if (file.is_open()) {
+        getline(file,line);
+    }
+    else {
+        cout << "Problem with reading from the file!" << endl;
+    }
+
+    file.close();
+
+    if (bracketsAreBalanced(line) && correctSymb(line)) {
+          postfix_expression = RPN(line);
+          cout << calculate(postfix_expression);
+    }
+    else {
+        cout << "The input data is incorrect!";
+    }
+
+    return 0;
+}
+
 bool isOperator(char ch) {
     return (ch == '+' || ch == '-' || ch == '*' || ch == '/' || ch == '^');
 }
 
-bool correctSymb(string line, int i = 0, bool InNum = false, bool inSymb = false) {
+bool correctSymb(string line, int i, bool InNum , bool inSymb) { 
     char ch = line[i];
     if (line[i] == '\0') {
         return InNum;
@@ -34,7 +83,7 @@ bool correctSymb(string line, int i = 0, bool InNum = false, bool inSymb = false
         }
         InNum = true;
         inSymb = false;
-       return correctSymb(line, ++i, InNum, inSymb);
+        return correctSymb(line, ++i, InNum, inSymb);
     }
     if (ch == ' ') {
         return correctSymb(line, ++i, InNum, inSymb);
@@ -48,18 +97,18 @@ bool correctSymb(string line, int i = 0, bool InNum = false, bool inSymb = false
         if (!InNum) {
             return false;
         }
-        
         inSymb = true;
         InNum = false;
         return correctSymb(line, ++i, InNum, inSymb);
     }
+
 }
 
 bool bracketsAreBalanced(string line) {
-    int numOfOp = 0; //the oppening brackets
-    int numOfClos = 0; //the closing brackets
+    int numOfOp = 0; //number of the oppening brackets
+    int numOfClos = 0; //number of the closing brackets
 
-    for (int i = 0; i < line.size(); i++) {
+    for (size_t i = 0; i < line.size(); i++) {
         if (line[i] == '(') {
             numOfOp++;
         }
@@ -67,6 +116,7 @@ bool bracketsAreBalanced(string line) {
             numOfClos++;
         }
     }
+
     return numOfClos == numOfOp;
 }
 
@@ -75,23 +125,23 @@ bool isOperand(char ch) {
 }
 
 // here, precedence() function is used to define the precedence to the operator.  
-int precedence(char op)
-{
-    if (op == '+' || op == '-')                
+int precedence(char op) {
+    
+    if (op == '+' || op == '-')                   /* it defines the lowest precedence */
         return 1;
     if (op == '*' || op == '/')
         return 2;
-    if (op == '^')                                 
+    if (op == '^')                                /* exponent operator has the highest precedence */
         return 3;
 
     return 0;
- }
+}
 
- /* The eqlOrhigher() function is used to check the higher or equal precedence of the two operators in infix expression. */
-bool eqlOrHigher(char operator1, char operator2){
+/* The eqlOrhigher() function is used to check the higher or equal precedence of the two operators in infix expression. */
+bool eqlOrHigher(char operator1, char operator2) {
     int p1 = precedence(operator1);
     int p2 = precedence(operator2);
-    if (p1 == p2){
+    if (p1 == p2) {
         if (operator1 == '^') {
             return false;
         }
@@ -107,8 +157,8 @@ string RPN(string infix) {
 
     st.push('#');
 
-    for (int i = 0; i < infix.length(); i++)
-    {
+    for (size_t i = 0; i < infix.length(); i++) {
+        
         ch = infix[i];
 
         if (ch == ' ') {
@@ -116,7 +166,7 @@ string RPN(string infix) {
         }
         else if (ch == '(') {
             st.push(ch);
-        } 
+        }
         else if (isOperand(ch)) {
             int j = i + 1;
             postfix += ch;
@@ -127,7 +177,7 @@ string RPN(string infix) {
             }
             postfix += ' ';
         }
-        else if (isOperator(ch)){
+        else if (isOperator(ch)) {
             bool isNegativeNum = false;
             if (ch == '-') {
                 isNegativeNum = true;
@@ -144,15 +194,15 @@ string RPN(string infix) {
                     continue;
                 }
             }
-            while (!st.empty() && (st.top() != '#') && eqlOrHigher(st.top(), ch)){
+            while (!st.empty() && (st.top() != '#') && eqlOrHigher(st.top(), ch)) {
                 postfix += st.top();
                 postfix += ' ';
                 st.pop();
             }
             st.push(ch);
         }
-        else if (ch == ')'){
-            while (!st.empty() && st.top() != '('){
+        else if (ch == ')') {
+            while (!st.empty() && st.top() != '(') {
                 postfix += st.top();
                 postfix += ' ';
                 st.pop();
@@ -160,7 +210,6 @@ string RPN(string infix) {
             st.pop();
         }
     }
-
     while (!st.empty() && st.top() != '#') {
         postfix += st.top();
         postfix += ' ';
@@ -171,7 +220,7 @@ string RPN(string infix) {
 }
 
 double doOperation(double leftOp, double rightOp, char ch) {
-    switch(ch) {
+    switch (ch) {
     case '+': return leftOp + rightOp;
     case '-': return leftOp - rightOp;
     case '*': return leftOp * rightOp;
@@ -211,7 +260,7 @@ double calculate(string expression) {
             rightOp += stack.top();
             stack.pop();
             if ((!stack.empty()) && stack.top() != '#') {
-                leftOp +=stack.top();
+                leftOp += stack.top();
                 stack.pop();
             }
             result = doOperation(leftOp, rightOp, expression[i]);
@@ -220,32 +269,4 @@ double calculate(string expression) {
         }
     }
     return stack.top();
-}
-
-int main()
-{
-    string line;
-    fstream file;
-    string postfix_expression;
-
-    file.open("aritmetic_expression.txt", ios::in);
-
-    if (file.is_open()) {
-        getline(file,line);
-    }
-    else {
-        cout << "Problem with reading from the file!" << endl;
-    }
-
-    file.close();
-
-    if (bracketsAreBalanced(line) && correctSymb(line)) {
-          postfix_expression = RPN(line);
-          cout << calculate(postfix_expression);
-    }
-    else {
-        cout << "The input data is incorrect!";
-    }
-
-    return 0;
 }
