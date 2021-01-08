@@ -55,7 +55,7 @@ int main()
         getline(file,line);
     }
     else {
-        cout << "Problem with reading from the file!" << endl;
+        cout << "NaN" << endl;
     }
 
     file.close();
@@ -63,10 +63,9 @@ int main()
     if (bracketsAreBalanced(line) && correctSymb(line)) {
           postfix_expression = RPN(line);
           calculate(postfix_expression, result);
-          cout << result << endl;
     }
     else {
-        cout << "The input data is invalid!";
+        cout << "NaN";
     }
 
     return 0;
@@ -300,11 +299,11 @@ void calculate(const string expression, double& result) {
             doOperation(leftOp, rightOp, expression[i], curResult);
             
             if (curResult == INFINITY) {
-                cout << "The result is too big!" << endl;
+                cout << "NaN" << endl;
                 return;
             }
-            if (rightOp == 0 && expression[i] == '-') {
-                cout << "The denominator is zero!" << endl;
+            if (rightOp == 0 && expression[i] == '/') {
+                cout << "NaN" << endl;
                 return;
             }
             stack.push(curResult);
@@ -312,5 +311,6 @@ void calculate(const string expression, double& result) {
     }
 
     result = stack.top();
+    cout << result << endl;
     return;
 }
