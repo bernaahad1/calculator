@@ -307,7 +307,7 @@ void calculate(const string expression, double& result) {
                 cout << "The denominator is zero!" << endl;
                 return;
             }
-            stack.push(result);
+            stack.push(curResult);
         }
     }
 
