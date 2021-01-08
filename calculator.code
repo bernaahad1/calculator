@@ -1,3 +1,19 @@
+/**
+*
+* Solution to course project # <номер на вариант>
+* Introduction to programming course
+* Faculty of Mathematics and Informatics of Sofia University
+* Winter semester 2020/2021
+*
+* @author Berna Ahad
+* @idnumber 62543
+* @compiler VC
+*
+* <main file>
+*
+*/
+
+
 #include <iostream>
 #include <fstream>
 #include <string>
@@ -7,7 +23,7 @@ using namespace std;
 
 bool isOperator(char ch);
 
-bool correctSymb(string line, int i = 0, bool InNum = false, bool inSymb = false);  //inNum is true when the  symbol must be num, is false when the current symb must be */-+
+bool correctSymb(string line, int i = 0, bool InNum = false, bool inSymb = false);
 
 bool bracketsAreBalanced(string line);
 
@@ -63,24 +79,24 @@ bool isOperator(char ch) {
 bool correctSymb(string line, int i, bool InNum , bool inSymb) { 
     char ch = line[i];
     if (line[i] == '\0') {
-        return InNum;
+        return InNum;               //end the function and if the last symbol is num return true else return false
     }
     if (ch == '(') {
         if (InNum) {
-            return false;
+            return false;          //if before '(' is a numumber then return false
         }
         inSymb = false;
         InNum = false;
         return correctSymb(line, ++i, InNum, inSymb);
     }
     if (ch == ')') {
-        if (inSymb) {
+        if (inSymb) {              // check if before ')' is a symbol or number
             return false;
         }
         return correctSymb(line, ++i, InNum, inSymb);
     }
     if (ch >= '0' && ch <= '9') {
-        if (i != 0 && line[i - 1] == ' ' && (i - 1) != 0 && InNum) {
+        if (i != 0 && line[i - 1] == ' ' && (i - 1) != 0 && InNum) {    // checking for icorrect input like "2  2"
             return false;
         }
         InNum = true;
@@ -91,7 +107,7 @@ bool correctSymb(string line, int i, bool InNum , bool inSymb) {
         return correctSymb(line, ++i, InNum, inSymb);
     }
     if (isOperator(ch)) {
-        if ((!InNum) && (!inSymb) && ch == '-') {
+        if ((!InNum) && (!inSymb) && ch == '-') {         // check if the beggining start with '-'
             inSymb = true;
             InNum = false;
             return correctSymb(line, ++i, InNum, inSymb);
@@ -152,6 +168,7 @@ bool eqlOrHigher(char operator1, char operator2) {
     return  (p1 > p2 ? true : false);
 }
 
+// The RPN() function converts the expression from infix to postfix
 string RPN(string infix) {
     stack <char> st;
     string postfix = "";
@@ -171,7 +188,7 @@ string RPN(string infix) {
         }
         else if (isOperand(ch)) {
             int j = i + 1;
-            postfix += ch;
+            postfix += ch;            // if the symbol is operand add it to the postfix and check if it has another numbers
 
             while (isOperand(infix[i + 1])) {
                 postfix += infix[i + 1];
@@ -181,6 +198,7 @@ string RPN(string infix) {
         }
         else if (isOperator(ch)) {
             bool isNegativeNum = false;
+
             if (ch == '-') {
                 isNegativeNum = true;
                 for (int j = i - 1; j >= 0; j--) {
@@ -239,6 +257,7 @@ void doOperation(const double leftOp, const double rightOp, const char ch, doubl
         result = pow(leftOp, rightOp);
         return;
     }
+
     return;
 }
 
