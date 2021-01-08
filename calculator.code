@@ -120,6 +120,7 @@ bool correctSymb(string line, int i, bool InNum , bool inSymb) {
         return correctSymb(line, ++i, InNum, inSymb);
     }
 
+    return false;
 }
 
 bool bracketsAreBalanced(string line) {
