@@ -1,6 +1,6 @@
 /**
 *
-* Solution to course project # <номер на вариант>
+* Solution to course project # 2
 * Introduction to programming course
 * Faculty of Mathematics and Informatics of Sofia University
 * Winter semester 2020/2021
@@ -29,13 +29,13 @@ bool bracketsAreBalanced(string line);
 
 bool isOperand(char ch);
 
-// here, precedence() function is used to define the precedence to the operator.  
+// here, precedence() function is used to define the precedence to the operator.
 int precedence(char op);
 
-// The eqlOrhigher() function is used to check the higher or equal precedence of the two operators in infix expression. 
+// The eqlOrhigher() function is used to check the higher or equal precedence of the two operators in infix expression.
 bool eqlOrHigher(char operator1, char operator2);
 
-string RPN(string infix); 
+string RPN(string infix);
 
 void doOperation(const double leftOp, const double rightOp, const char ch, double& result);
 
@@ -76,7 +76,7 @@ bool isOperator(char ch) {
     return (ch == '+' || ch == '-' || ch == '*' || ch == '/' || ch == '^');
 }
 
-bool correctSymb(string line, int i, bool InNum , bool inSymb) { 
+bool correctSymb(string line, int i, bool InNum , bool inSymb) {
     char ch = line[i];
     if (line[i] == '\0') {
         return InNum;               //end the function and if the last symbol is num return true else return false
@@ -143,9 +143,9 @@ bool isOperand(char ch) {
     return (ch >= '0' && ch <= '9');
 }
 
-// here, precedence() function is used to define the precedence to the operator.  
+// here, precedence() function is used to define the precedence to the operator.
 int precedence(char op) {
-    
+
     if (op == '+' || op == '-')                   /* it defines the lowest precedence */
         return 1;
     if (op == '*' || op == '/')
@@ -178,7 +178,7 @@ string RPN(string infix) {
     st.push('#');
 
     for (size_t i = 0; i < infix.length(); i++) {
-        
+
         ch = infix[i];
 
         if (ch == ' ') {
@@ -242,19 +242,19 @@ string RPN(string infix) {
 
 void doOperation(const double leftOp, const double rightOp, const char ch, double& result) {
     switch (ch) {
-    case '+': 
+    case '+':
         result = leftOp + rightOp;
         return;
-    case '-': 
+    case '-':
         result = leftOp - rightOp;
         return;
-    case '*': 
+    case '*':
         result = leftOp * rightOp;
         return;
-    case '/': 
+    case '/':
         result = leftOp / rightOp;
         return;
-    case '^': 
+    case '^':
         result = pow(leftOp, rightOp);
         return;
     }
@@ -298,7 +298,7 @@ void calculate(const string expression, double& result) {
                 stack.pop();
             }
             doOperation(leftOp, rightOp, expression[i], curResult);
-            
+
             if (curResult == INFINITY) {
                 cout << "The result is too big!" << endl;
                 return;
