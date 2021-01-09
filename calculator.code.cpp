@@ -23,9 +23,9 @@ using namespace std;
 
 bool isOperator(char ch);
 
-bool correctSymb(string line, int i = 0, bool InNum = false, bool inSymb = false);
+bool correctSymb(const string& line, int i = 0, bool InNum = false, bool inSymb = false);
 
-bool bracketsAreBalanced(string line);
+bool bracketsAreBalanced(const string& line);
 
 bool isOperand(char ch);
 
@@ -35,11 +35,11 @@ int precedence(char op);
 // The eqlOrhigher() function is used to check the higher or equal precedence of the two operators in infix expression. 
 bool eqlOrHigher(char operator1, char operator2);
 
-string RPN(string infix); 
+string RPN(const string& infix); 
 
 void doOperation(const double leftOp, const double rightOp, const char ch, double& result);
 
-void calculate(const string expression, double& result);
+void calculate(const string& expression, double& result);
 
 
 int main()
@@ -75,7 +75,7 @@ bool isOperator(char ch) {
     return (ch == '+' || ch == '-' || ch == '*' || ch == '/' || ch == '^');
 }
 
-bool correctSymb(string line, int i, bool InNum , bool inSymb) { 
+bool correctSymb(const string& line, int i, bool InNum , bool inSymb) { 
     char ch = line[i];
     if (line[i] == '\0') {
         return InNum;               //end the function and if the last symbol is num return true else return false
@@ -122,7 +122,7 @@ bool correctSymb(string line, int i, bool InNum , bool inSymb) {
     return false;
 }
 
-bool bracketsAreBalanced(string line) {
+bool bracketsAreBalanced(const string& line) {
     int numOfOp = 0; //number of the oppening brackets
     int numOfClos = 0; //number of the closing brackets
 
@@ -169,7 +169,7 @@ bool eqlOrHigher(char operator1, char operator2) {
 }
 
 // The RPN() function converts the expression from infix to postfix
-string RPN(string infix) {
+string RPN(const string& infix) {
     stack <char> st;
     string postfix = "";
     char ch;
@@ -261,7 +261,7 @@ void doOperation(const double leftOp, const double rightOp, const char ch, doubl
     return;
 }
 
-void calculate(const string expression, double& result) {
+void calculate(const string& expression, double& result) {
     stack <double> stack;
 
     for (size_t i = 0; i < expression.size(); i++) {
