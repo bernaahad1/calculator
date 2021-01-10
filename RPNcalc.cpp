@@ -9,7 +9,7 @@
 * @idnumber 62543
 * @compiler VC
 *
-* <file with helper functions>
+* <file with helper functions that calculate the expression>
 *
 */
 

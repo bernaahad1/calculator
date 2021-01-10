@@ -9,7 +9,7 @@
 * @idnumber 62543
 * @compiler VC
 *
-* <file with helper functions>
+* <file with helper functions that convert infix expression to postfix one>
 *
 */
 
