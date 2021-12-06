@@ -1,4 +1,5 @@
 Readme file for Calculator
+This is project for the first semester in FMI SU
 
 The expression that is wanted to be solved must be written in the aritmetic_expression.txt file.
 Between every separate symbol there can be more than one space. If you want to enter negative number and
